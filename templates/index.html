@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <style>
+
+        body {
+            font-family: "Lato", sans-serif;
+        }
+
+
+.sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #270ee3;
+  overflow-x: hidden;
+  transition: 1s;
+  padding-top: 90px;
+}
+
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 23px;
+  color: #ffffff;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+.container{
+    position: relative;
+    transition: .5s;
+    overflow: auto;
+
+
+}
+
+.container::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+}
+
+
+.container::-webkit-scrollbar
+{
+	width: 10px;
+	background-color: #F5F5F5;
+}
+
+.container::-webkit-scrollbar-thumb
+{
+	background-color: #ffffff;
+
+	background-image: -webkit-gradient(linear, 0 0, 0 100%,
+	                   color-stop(.5, rgba(255, 255, 255, .2)),
+					   color-stop(.5, transparent), to(transparent));
+}
+
+
+
+.fa-plus {
+    font-size: 20px; 
+    color: #ffffff;
+    float: right;
+    transition: .5s;
+}
+
+.label{
+    color: white; 
+    font-size: 19px;
+    margin-left: 55px;
+}
+
+.input{
+
+    margin-left: 2px;
+
+}
+
+.category{
+
+    margin-top: 21px;
+    border: 2px solid #ffffff;
+
+}
+
+
+.active{
+
+    background-color: #000000;
+
+}
+
+#main {
+  transition: margin-left 1s;
+  padding: 16px;
+}
+
+#tablo, #myChart {
+    opacity: 0;
+    transition: opacity 1.5s;
+}
+
+#scrollable {
+  height: 400px;
+    width: 800px;
+    overflow: hidden;
+  overflow-y: scroll;
+    opacity: 0;
+    transition: opacity 1.5s;
+
+}
+
+th {
+    top: 0;
+    z-index: 3;
+    position: sticky;
+}
+
+
+#scrollable::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+}
+
+
+#scrollable::-webkit-scrollbar
+{
+	width: 10px;
+	background-color: #F5F5F5;
+}
+
+#scrollable::-webkit-scrollbar-thumb
+{
+	background-color: #0ae;
+
+	background-image: -webkit-gradient(linear, 0 0, 0 100%,
+	                   color-stop(.5, rgba(255, 255, 255, .2)),
+					   color-stop(.5, transparent), to(transparent));
+}
+
+
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+</style>
+</head>
+<body>
+
+<div id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" style="font-size: 50px; color: #ff0047 " id = "clsme"class="closebtn" onclick="closeNav()">&times;</a>
+
+    <a href="#" class = "category">Brand <i class="fas fa-plus"></i></a>
+    <div class = "container">
+
+
+          {% for marka in marka_list %}
+              <label class = "label" for="{{marka}}" >{{marka}}</label>
+              <input class = "inputmarka"type="checkbox" name="{{marka}}" id="{{marka}}">
+              <br>
+          {% endfor %}
+
+         <input class='btn btn-success'  onclick='selectedBrand(this)' style = 'margin-left: 100px; width: 100px' type='submit' value='Next' id = 'inputmarka'>
+         <input class='btn btn-danger'  onclick='deleteAll(this)' style = 'display: block ; margin-left: 100px; margin-top: 10px; width: 100px; font-size:15px' type='submit' value='DeleteAll' id = 'tmarka'>
+
+
+    </div>  
+
+
+  <a href="#"  id = "categorymodel" class = "category">Model <i class="fas fa-plus"></i></a>
+  <div class = "container " id = "model">
+  </div>
+
+  <a href="#" id = "categoryyear" class = "category">Year <i class="fas fa-plus"></i></a>
+  <div class = "container" id="year"></div>
+
+  <a href="#" id = "categorycolor" class = "category">Color <i class="fas fa-plus"></i></a>
+  <div class = "container" id="color"></div>
+
+  <a href="#" id = "categorykm" class = "category">Kilometers <i class="fas fa-plus"></i></a>
+  <div class = "container" id="km"></div>
+
+  <a href="#" id = "categoryprice" class = "category">Price <i class="fas fa-plus"></i></a>
+  <div class = "container" id="price"></div>
+  <br>
+
+  <input class="btn btn-success" onclick="send()" style = "position: absolute; left : 125px ; width: 125px" type="submit" value="Submit">
+  <br>
+  <div style="font-size: x-large; visibility: hidden">abcdefg</div>
+
+
+</div>
+<div id="main">
+  <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Open Navigation</span>
+  <h2>Car Search</h2>
+  <p>Find cars easily you want! </p>
+
+    <div  id = "scrollable">
+    <table id = "tablo" class="table table-hover table-dark" style="width: 800px;">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Date</th>
+      <th scope="col">Brand</th>
+      <th scope="col">Model</th>
+        <th scope="col">Year</th>
+        <th scope="col">Color</th>
+        <th scope="col">Km</th>
+        <th scope="col">Price</th>
+    </tr>
+  </thead>
+  <tbody id = "tableBody">
+  </tbody>
+</table>
+    </div>
+<div style="display: inline-block; overflow: auto; position:absolute;margin-left: 810px; top: 150px ; width: 660px; height: 900px">
+    <canvas id="myChart"></canvas>
+</div>
+
+</div>
+
+
+
+<script>
+     openNav();
+
+function openNav() {
+document.getElementById("mySidenav").style.width = "400px";
+document.getElementById("main").style.marginLeft = "400px";
+
+
+let containers = document.getElementsByClassName("container");
+let faPlus = document.getElementsByClassName("fa-plus"); 
+
+for(var i = 0; i<containers.length; i++){
+    containers[i].style.height = "0px";
+    faPlus[i].style.opacity = "1";
+}
+
+let elems = document.getElementsByClassName("fa-plus");
+
+Array.prototype.forEach.call(elems, function(element) {
+    element.style.height = "0px";
+});
+
+setTimeout(function(){Array.prototype.forEach.call(elems, function(element) {
+    element.style.fontSize = "25px";
+    element.style.visibility = "visible";
+});},150);
+
+}
+
+function closeNav() {
+document.getElementById("mySidenav").style.width = "0";
+document.getElementById("main").style.marginLeft= "0";
+
+//tüm elemanları gezmeli bu şuanda deneme amaclı boyle kaldı___________________________________-***
+//document.getElementsByClassName("container")[0].style.height = "0px";
+//document.getElementsByClassName("fa-plus")[0].style.opacity = "0";
+
+let containers = document.getElementsByClassName("container");
+let faPlus = document.getElementsByClassName("fa-plus"); 
+
+for(var i = 0; i<containers.length; i++){
+    containers[i].style.height = "0px";
+    faPlus[i].style.opacity = "0";
+}
+
+let elems = document.getElementsByClassName("fa-plus");
+Array.prototype.forEach.call(elems, function(element) {
+    element.style.height = "0px";
+    element.style.visibility = "hidden";
+});
+
+}
+
+var categories = document.getElementsByClassName("category");
+
+for(var i=0; i<categories.length; i++){
+
+    categories[i].addEventListener("click",function(){
+
+        if(!this.classList.contains("active")){
+
+
+        for(var j = 0; j < categories.length; j++){
+         categories[j].nextElementSibling.style.height = "0px";
+         categories[j].classList.remove("active");   
+        }
+
+        this.classList.toggle("active");
+
+        var content = this.nextElementSibling;
+
+        console.log(content);
+
+        if(content.style.height === "200px" ){
+            content.style.height = "0px";
+            //content.style.display = "none";
+        }else{
+            content.style.height = "200px";
+            //content.style.display = "block";
+        }
+
+        }else{
+
+            var content = this.nextElementSibling;
+
+            this.classList.remove("active");
+            content.style.height = "0px";
+
+        }
+
+    });
+
+}
+
+function selectedBrand(nextObj) {
+    var aranacakClassName = nextObj.id;
+
+    let elements = document.getElementsByClassName(aranacakClassName);
+    let myArray = [];
+    Array.prototype.forEach.call(elements, function (element) {
+        if (element.checked) {
+            myArray.push(element);
+        }
+    });
+
+    if(myArray.length > 1){
+        alert("Only one option can be chosen for Brand")
+    }else if (myArray.length == 1){
+        updateModel(myArray[0]);
+
+        setTimeout(function () {document.getElementById("categorymodel").click();}, 100);
+
+    }else{
+        alert("Choose a car Brand!")
+    }
+
+
+}
+
+function updateModel(markaObj) {
+
+    var marka = markaObj.id.trim();
+
+    if(marka.includes(" ")){
+        var ry = marka.split(" ");
+        marka = ry.join("*");
+    }
+
+    console.log("marka");
+    console.log(marka);
+
+    var arr = [];
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+
+        //alert(this.responseText);
+
+      arr = this.responseText.split("^");
+
+      console.log("arr update model içindeki")
+      console.log(arr)
+
+      document.getElementById("model").innerHTML="";
+      var value_duzelt = "";
+
+      arr.forEach(function (value, index,array) {
+          if (value != ""){
+
+              if(value.includes(":")){
+                  value_duzelt = value.trim().replace(":","");
+              }else{
+                  value_duzelt = value.trim();
+              }
+
+                  if(value.trim().includes(" ")){
+                   var ry = value.trim().split(" ");
+                   value = ry.join("*");
+                    }
+
+
+
+              console.log("marka");
+              console.log(marka);
+       document.getElementById("model").innerHTML += "<label class = 'label' for=" +marka+"_"+value +" >" + value_duzelt + "</label> <input class = 'inputmodel' type='checkbox'  name=" +marka+"_"+value +" id=" +marka+"_"+value +"> <br>";
+
+          }
+      });
+
+        document.getElementById("model").innerHTML += " <input class='btn btn-success'  onclick='updateYear(this)' style = 'margin-left: 100px; width: 100px' type='submit' value='Next' id = 'inputmodel'> "; //yeni
+        document.getElementById("model").innerHTML += " <input class='btn btn-warning'  onclick='selectAll(this)' style = 'display: block ; margin-left: 100px; margin-top: 10px; width: 100px; font-size:15px' type='submit' value='SelectAll' id = 'tmodel'> "; //yeni
+        document.getElementById("tablo").style.opacity = 0;
+        document.getElementById("myChart").style.opacity = 0;
+        document.getElementById("scrollable").style.opacity = 0;
+       }
+
+    };
+    xhttp.open("POST", "/model_ajax/", true);
+
+    console.log("ALTTA");
+    console.log(marka)
+    xhttp.send(marka);
+
+
+
+
+}
+
+
+function updateYear(modelObj) {
+
+    var aranacakClassName = modelObj.id;
+
+    let elements = document.getElementsByClassName(aranacakClassName);
+    let myArray = [];
+    Array.prototype.forEach.call(elements, function (element) {
+        if (element.checked) {
+            myArray.push(element.id);
+        }
+    });
+    var myString = myArray.join("?");   // Acura_CL  Acura_CL?Acura_RSX
+    console.log(myArray);
+
+
+    var marka_model = myString;
+
+    if (marka_model.includes(" ")) {
+        var ry = marka_model.split(" ");
+        marka_model = ry.join("*");
+    }
+
+    console.log("marka_model");
+    console.log(marka_model);
+
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            //alert(this.responseText);
+
+            var arr = this.responseText.split("^");
+
+            var sorted_arr = arr.sort((a, b) => a - b);
+
+
+
+            console.log("RESPONSE:")
+            console.log(this.responseText);
+
+            document.getElementById("year").innerHTML = "";
+            arr.forEach(function (value, index, array) {
+                if (value != "") {
+                    document.getElementById("year").innerHTML += "<label class = 'label' for=" + marka_model + "_" + value + " >" + value + "</label> <input class = 'inputyear' type='checkbox' name=" + marka_model + "_" + value + " id=" + marka_model + "_" + value + "> <br>"
+                }
+            });
+
+             document.getElementById("year").innerHTML += " <input class='btn btn-success'  onclick='updateColor(this)' style = 'margin-left: 100px; width: 100px' type='submit' value='Next' id = 'inputyear'> "; //yeni
+             document.getElementById("year").innerHTML += " <input class='btn btn-warning'  onclick='selectAll(this)' style = 'display: block ; margin-left: 100px; margin-top: 10px; width: 100px; font-size:15px' type='submit' value='SelectAll' id = 'tyear'> "; //yeni
+            setTimeout(function () {document.getElementById("categoryyear").click();}, 100);
+            document.getElementById("tablo").style.opacity = 0;
+            document.getElementById("myChart").style.opacity = 0;
+            document.getElementById("scrollable").style.opacity = 0;
+        }
+    };
+    xhttp.open("POST", "/year_ajax/", true);
+    xhttp.send(marka_model);
+
+
+
+}
+
+function updateColor(yearObj) {
+
+    var aranacakClassName = yearObj.id; //inputyear
+
+    let elements = document.getElementsByClassName(aranacakClassName);
+    let myArray = [];
+    Array.prototype.forEach.call(elements, function (element) {
+        if (element.checked) {
+            myArray.push(element.id);
+        }
+    });
+    var id = myArray.join("?");   // Acura_CL   Acura_CL?Acura_RSX
+    console.log("myARRAYYYYYYY");
+    console.log(id);
+
+    //deneme
+    var x = id.split("?")
+    mrk = x[0].split("_")[0];
+    console.log("MRK");
+    console.log(mrk);
+    //deneme
+
+
+
+    // marka_model_tarih    // Acura_C5_2001
+
+
+    if(id.includes(" ")){
+        var ry = id.split(" ");
+        id = ry.join("*");
+    }
+
+    var xhttp = new XMLHttpRequest()
+    xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+
+      //alert(this.responseText);
+      arr = this.responseText.split("^");
+
+      document.getElementById("color").innerHTML="";
+      arr.forEach(function (value, index) {
+          if(value != "") {
+
+              var value_duzelt = "";
+              if(value.includes("*")){
+                  value_duzelt = value.trim().replace("*"," ");
+              }else{
+                  value_duzelt = value.trim();
+              }
+
+              value_duzelt = translateColor(value_duzelt);
+
+
+              if(value.trim().includes(" ")){
+                   var ry = value.trim().split(" ");
+                   value = ry.join("*");
+                    }
+
+              console.log("RENKLER")
+              console.log(value);
+
+              document.getElementById("color").innerHTML += "<label class = 'label' for=" + id + "_" + value + " >" + value_duzelt + "</label> <input class = 'inputcolor' type='checkbox' name=" + id + "_" + value + " id=" + id + "_" + value + "> <br>"
+          }
+      });
+
+       document.getElementById("color").innerHTML += " <input class='btn btn-success'  onclick='updateKm(this)' style = 'margin-left: 100px; width: 100px' type='submit' value='Next' id = 'inputcolor'> "; //yeni
+         document.getElementById("color").innerHTML += " <input class='btn btn-warning'  onclick='selectAll(this)' style = 'display: block ; margin-left: 100px; margin-top: 10px; width: 100px; font-size:15px' type='submit' value='SelectAll' id = 'tcolor'> "; //yeni
+        setTimeout(function () {document.getElementById("categorycolor").click();}, 100);
+        document.getElementById("tablo").style.opacity = 0;
+        document.getElementById("myChart").style.opacity = 0;
+        document.getElementById("scrollable").style.opacity = 0;
+       }
+    };
+    xhttp.open("POST", "/color_ajax/", true);
+    xhttp.send(id);
+
+
+
+}
+
+function updateKm(colorObj) {
+
+    var aranacakClassName = colorObj.id;
+
+    let elements = document.getElementsByClassName(aranacakClassName);
+    let myArray = [];
+    Array.prototype.forEach.call(elements, function (element) {
+        if (element.checked) {
+            myArray.push(element.id);
+        }
+    });
+    var myString = myArray.join("?");   // Acura_CL   Acura_CL?Acura_RSX
+    console.log("UPDATEKM");
+    console.log(myArray);
+
+
+    var marka_model_year_color = myString.trim(); // marka_model_year_color
+
+     if(marka_model_year_color.includes(" ")){
+        var ry = marka_model_year_color.split(" ");
+        marka_model_year_color = ry.join("*");
+    }
+
+     console.log("marka_model_year_color")
+    console.log(marka_model_year_color);
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+
+        console.log(this.responseText);
+        var arr = this.responseText.split("^");
+
+        document.getElementById("km").innerHTML="";
+
+        console.log("ARRRRRRRRRRRRRRRRRRRRRRRRa")
+        console.log(arr)
+
+        if(arr[0] == arr[1]){
+
+            var num = arr[0]*10;
+            num = num/10;
+            num++;
+            document.getElementById("km").innerHTML = "<p style = 'color: red; font-size: 20px; margin-left: 100px; margin-top: 2px' > Set Interval For Km </p>";
+            document.getElementById("km").innerHTML += "<p style = 'color: red; font-size: 13px; margin-left: 40px; margin-top: 5px' > No interval for this criteria(click next button)</p>";
+           document.getElementById("km").innerHTML += "<label class = 'label' for=" + marka_model_year_color + "_" + arr[0] + " >" + "Min value:(" + arr[0] +"km)" + "</label> <input disabled class = 'inputkm' type='text' style = 'width: 75px' name=" + marka_model_year_color + "_" + " id=" + marka_model_year_color + "_" + arr[0] + " value="+arr[0]+">"+ "<p style = 'font-size: 10px;display:inline-block; color: red; margin-left:5px'>Km</p>"+"<br>";
+           document.getElementById("km").innerHTML += "<label class = 'label' for=" + marka_model_year_color + "_" + num + " >" + "Max value:(" + arr[0] +"km)" + "</label> <input disabled class = 'inputkm' type='text' style = 'width: 75px' name=" + marka_model_year_color + "_" + " id=" + marka_model_year_color + "_" + num + " value="+num+">"+ "<p style = 'font-size: 10px;display:inline-block; color: red; margin-left:1px'>Km</p>" +"<br>";
+            document.getElementById("km").innerHTML += "<input class='btn btn-warning' id='inputkm' onclick = 'updatePrice(this)' style ='width: 75px ; margin-left: 120px ; margin-top: 5px' type='input' value='Next'>";
+        }else {
+            document.getElementById("km").innerHTML = "<p style = 'color: red; font-size: 20px; margin-left: 100px; margin-top: 20px' > Set Interval For Km</p>";
+
+                document.getElementById("km").innerHTML += "<label class = 'label' for=" + marka_model_year_color + "_" + arr[0] + " >" + "Min value:(" + arr[0] +")" + "</label> <input placeholder='included' class = 'inputkm' type='text' style = 'width: 75px' name=" + marka_model_year_color + "_" + " id=" + marka_model_year_color + "_" + arr[0] + ">"+ "<p style = 'font-size: 10px;display:inline-block; color: red; margin-left:5px'>Km</p>" +"<br>";
+                document.getElementById("km").innerHTML += "<label class = 'label' for=" + marka_model_year_color + "_" + arr[1] + " >" + "Max value:(" + arr[1] +")"  + "</label> <input placeholder='excluded' class = 'inputkm' type='text' style = 'width: 75px' name=" + marka_model_year_color + "_"  + " id=" + marka_model_year_color + "_" + arr[1] + ">"+ "<p style = 'font-size: 10px;display:inline-block; color: red; margin-left:1px'>Km</p>" +"<br>";
+
+
+            document.getElementById("km").innerHTML += "<input class='btn btn-warning' id='inputkm' onclick = 'updatePrice(this)' style ='width: 75px ; margin-left: 120px ; margin-top: 10px' type='input' value='Next'>";
+
+        }
+
+        setTimeout(function () {document.getElementById("categorykm").click();}, 100);
+        document.getElementById("tablo").style.opacity = 0;
+        document.getElementById("myChart").style.opacity = 0;
+        document.getElementById("scrollable").style.opacity = 0;
+       }
+    };
+    xhttp.open("POST", "/km_ajax/", true);
+    xhttp.send(marka_model_year_color);
+
+
+
+}
+
+
+function updatePrice(kmObj) {
+
+    var aranacakClassName = kmObj.id;
+
+    let elements = document.getElementsByClassName(aranacakClassName);
+    let myArray = [];
+    let myValues = [];
+    let myIDS = [];
+    Array.prototype.forEach.call(elements, function (element) {
+
+        myArray.push(element.name);
+        myValues.push(element.value);   // 25000 30000  gibi bir şey olacak ya 2 değer ya 1 değer
+        myIDS.push(element.id);
+    });
+
+
+    if (myArray.length == 2) {
+
+        myArray[0] += myValues[0];
+        myArray[1] += myValues[1];
+
+    }
+
+    var idsplit = myIDS[0].split("_");
+    console.log("my values and idsplit")
+    console.log(myValues[1])
+    console.log(idsplit[idsplit.length-1])
+
+    if (myValues[1]-1+1 > idsplit[idsplit.length - 1]-1+1 && (myValues[0]-1+1 != myValues[1]-1+1)){ //ONEMLI altta else si de var bunun
+
+
+        var myString = myArray.join("?");   // Acura_CL   Acura_CL?Acura_RSX
+
+
+    var marka_model_year_color_km = myString.trim(); // marka_model_year_color_km
+
+    if (marka_model_year_color_km.includes(" ")) {
+        var ry = marka_model_year_color_km.split(" ");
+        marka_model_year_color_km = ry.join("*");
+    }
+
+    console.log("markamodelyearcolorkm");
+    console.log(marka_model_year_color_km);
+
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+
+            var arr = this.responseText.split("^");
+
+            console.log("CEVAP price AJAX")
+            console.log(arr)
+
+            document.getElementById("price").innerHTML = "";
+
+            if (arr[0] == arr[1]) {
+
+                var num = arr[0] - 1;
+                num = num + 1;
+                num++;
+
+                document.getElementById("price").innerHTML = "<p style = 'color: red; font-size: 20px; margin-left: 100px; margin-top: 2px' > Set Interval For Price </p>";
+                document.getElementById("price").innerHTML += "<p style = 'color: red; font-size: 13px; margin-left: 40px; margin-top: 5px' > No interval for this criteria(click next button) </p>";
+
+
+                document.getElementById("price").innerHTML += "<label class = 'label' for=" + marka_model_year_color_km + "_" + arr[0] + " >" + "Min value:(" + arr[0] + ")" + "</label> <input placeholder='included' disabled class = 'inputprice' type='text' style = 'width: 75px' name=" + marka_model_year_color_km + "_" + " id=" + marka_model_year_color_km + "_" + arr[0] + " value=" + arr[0] + ">" + "<p style = 'font-size: 10px;display:inline-block; color: red; margin-left:1px'>Price</p>" + "<br>";
+                document.getElementById("price").innerHTML += "<label class = 'label' for=" + marka_model_year_color_km + "_" + num + " >" + "Max value:(" + arr[0] + ")" + "</label> <input placeholder='excluded' disabled class = 'inputprice' type='text' style = 'width: 75px' name=" + marka_model_year_color_km + "_" + " id=" + marka_model_year_color_km + "_" + num + " value=" + num + ">" + "<p style = 'font-size: 10px;display:inline-block; color: red; margin-left:1px'>Price</p>" + "<br>";
+
+
+            } else {
+
+
+
+
+                document.getElementById("price").innerHTML = "<p style = 'color: red; font-size: 20px; margin-left: 100px; margin-top: 20px' > Set Interval For Price </p>";
+
+                //if (arr[0].trim() < arr[1].trim()){
+                document.getElementById("price").innerHTML += "<label class = 'label' for=" + marka_model_year_color_km + "_" + arr[0] + " >" + "Min value:(" + arr[0] + ")" + "</label> <input placeholder='included'  class = 'inputprice' type='text' style = 'width: 75px' name=" + marka_model_year_color_km + "_" + " id=" + marka_model_year_color_km + "_" + arr[0] + ">" + "<p style = 'font-size: 10px;display:inline-block; color: red; margin-left:5px'>Price</p>" + "<br>";
+                document.getElementById("price").innerHTML += "<label class = 'label' for=" + marka_model_year_color_km + "_" + arr[1] + " >" + "Max value:(" + arr[1] + ")" + "</label> <input placeholder='excluded'  class = 'inputprice' type='text' style = 'width: 75px' name=" + marka_model_year_color_km + "_" + " id=" + marka_model_year_color_km + "_" + arr[1] + ">" + "<p style = 'font-size: 10px;display:inline-block; color: red; margin-left:3px'>Price</p>" + "<br>";
+                //}else{
+                //  document.getElementById("price").innerHTML += "<label class = 'label' for=" + marka_model_year_color_km + "_" + arr[1] + " >" + "Min Değer:" + arr[1] +"price"  + "</label> <input class = 'inputprice' type='text' style = 'width: 75px' name=" + marka_model_year_color_km +  "_" +       " id=" + marka_model_year_color_km + "_" + arr[1] + "> <br>";
+                // document.getElementById("price").innerHTML += "<label class = 'label' for=" + marka_model_year_color_km + "_" + arr[0] + " >" + "Max Değer:" + arr[0] +"price"  + "</label> <input class = 'inputprice' type='text' style = 'width: 75px' name=" + marka_model_year_color_km +  "_" +      " id=" + marka_model_year_color_km + "_" + arr[0] + "> <br>";  //"_" vardı idlerden once
+
+                //}
+
+            }
+
+            setTimeout(function () {
+                document.getElementById("categoryprice").click();
+            }, 100);
+
+            document.getElementById("tablo").style.opacity = 0;
+            document.getElementById("myChart").style.opacity = 0;
+            document.getElementById("scrollable").style.opacity = 0;
+        }
+    };
+    xhttp.open("POST", "/price_ajax/", true);
+    xhttp.send(marka_model_year_color_km);
+
+    console.log("marka model year color km")
+        console.log(marka_model_year_color_km);
+
+
+}else{
+        alert("input value for max value cannot be smaller than min value!")
+    }
+}
+
+
+function send() {
+
+    var elements = document.getElementsByClassName("inputprice")
+    var myArray = [];
+    var myValues = [];
+    let myIDS = [];
+    Array.prototype.forEach.call(elements, function (element) {
+
+        myArray.push(element.name);
+        myValues.push(element.value);
+        myIDS.push(element.id);
+
+    });
+
+    if (myArray.length == 2) {
+        myArray[0] += myValues[0];
+        myArray[1] += myValues[1];
+    }
+
+    var idsplit = myIDS[0].split("_");
+    console.log("my values and idsplit")
+    console.log(myValues[1])
+    console.log(idsplit[idsplit.length - 1])
+
+    if (myValues[1]-1+1 > idsplit[idsplit.length - 1]-1+1 && (myValues[0]-1+1 != myValues[1]-1+1)){
+
+        var mystring = myArray.join("?");
+
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+
+            console.log("CEVAP");
+            console.log(this.responseText);
+            var element = document.getElementById("tableBody");
+            document.getElementById("tableBody").innerHTML = "";
+            var number = "", date = "non", marka = "", model = "", year = "", color = "", km = "", price = "";
+            var car_array_raw = this.responseText.split("|");  //  m_mod_y_c_km_price , m_mod_y_c_km_price
+            var car_array = [];
+
+
+            for (var i = 0; i < car_array_raw.length; i++) {
+                if (!car_array.includes(car_array_raw[i])) {
+                    car_array.push(car_array_raw[i]);
+                }
+            }
+
+           // var sorted_car_array = car_array.sort((a, b) => a.split("_")[0] - b.split("_")[0]);
+
+            //console.log(sorted_car_array);
+
+            prepareTheChart(car_array);
+
+            for (var i = 0; i < car_array.length; i++) {
+
+                var splitted = car_array[i].split("_");
+                date = splitted[0];
+                marka = splitted[1];
+                model = splitted[2];
+                year = splitted[3];
+                color = splitted[4];
+                color = translateColor(color);
+                km = splitted[5];
+                price = splitted[6];
+
+                number = i + 1;
+
+
+                element.innerHTML += "" +
+                    "<tr> " +
+                    "<th scope='row'>" + number + "</th>" +
+                    "<td>" + date + "</td>" +
+                    "<td>" + marka + "</td>" +
+                    "<td>" + model + "</td>" +
+                    "<td>" + year + "</td>" +
+                    "<td>" + color + "</td>" +
+                    "<td>" + km + "</td>" +
+                    "<td>" + price + "</td>" +
+                    "</tr>"
+
+            }
+
+            setTimeout(function () {
+                document.getElementById("clsme").click()
+            }, 150);
+
+            document.getElementById("tablo").style.opacity = 1;
+            document.getElementById("myChart").style.opacity = 1;
+            document.getElementById("scrollable").style.opacity = 1;
+
+        }
+    };
+    xhttp.open("POST", "/send_ajax/", true);
+    xhttp.send(mystring);
+
+}else{
+        alert("input for max value cannot be smaller than min value!")
+    }
+
+
+
+}
+
+
+function prepareTheChart(cars) {   //all cars
+
+    // date_m_mod_y_c_km_price , date_m_mod_y_c_km_price
+
+    var dates = [];
+    var prices = [];
+
+
+    for(var i = 0; i<cars.length; i++){
+        dates.push(cars[i].split("_")[0]);
+        prices.push(cars[i].split("_")[6]);
+    }
+
+    var ctx = document.getElementById('myChart');
+    ctx.innerHTML="";
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,//['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            datasets: [{
+                label: 'prices according to date',
+                data: prices,//[12, 19, 3, 5, 2, 3],
+                fill:false,
+                lineTension : 0.1,
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                borderColor: 'rgb(75, 192, 192)',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive:  true,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        beginAtZero: false
+                    }
+                }]
+
+            }
+        }
+    });
+
+}
+
+
+function selectAll(obj) {
+
+    var elements = document.getElementsByClassName("inpu"+obj.id);
+
+    Array.prototype.forEach.call(elements, function (element) {
+
+        element.checked = true;
+
+    });
+
+}
+
+function deleteAll(obj){
+        var elements = document.getElementsByClassName("inpu"+obj.id);
+
+    Array.prototype.forEach.call(elements, function (element) {
+
+        element.checked = false;
+
+    });
+}
+
+function autoFill(){}
+
+function translateColor(color) {
+
+    switch (color.trim()) {
+        case "Turkuaz":
+            return  "Turquoise";
+        case "Kahverengi":
+            return  "Brown";
+        case "Beyaz":
+            return  "White";
+        case "Lacivert":
+            return  "Dark Blue";
+        case "Kırmızı":
+            return "Red";
+        case "Gri":
+            return "Gray";
+        case "Siyah":
+            return "Black";
+        case "Füme":
+            return "Smoked";
+        case "Gümüş Gri":
+            return "Silver Gray";
+        case "Mavi":
+            return "Blue";
+        case "Diğer":
+            return "Other";
+        case "Bordo":
+            return "Burgundy";
+        case "Bej":
+            return "Beige";
+        case "Mor":
+            return "Purple";
+        case "Yeşil":
+            return "Green";
+        case "Altın":
+            return "Gold";
+        case "Turuncu":
+            return "Orange";
+        case "Sarı":
+            return "Yellow";
+        case "Şampanya":
+            return "Champagne";
+        case "Gümüş":
+            return "Silver";
+        case "Bal Rengi":
+            return "Honey";
+        case "Kum Rengi":
+            return "Sandy";
+        case "Ihlamur":
+            return "Linden";
+        case "Eflatun":
+            return "Magenta";
+        case "Pembe":
+            return "Pink";
+        case "Zeytin Gri":
+            return "Olive Gray";
+        case "Amarant":
+            return "Amaranth";
+
+
+
+    }
+
+}
+
+</script>
+   
+</body>
+</html> 
